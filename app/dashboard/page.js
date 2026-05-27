@@ -314,9 +314,12 @@ export default function Dashboard() {
           <nav className={styles.nav}>
             <div className={styles.navSection}>Reminders</div>
             {upcomingReminders.slice(0, 5).map(d => (
-              <div key={d.id} className={styles.reminderItem}>
+              <div key={d.id} className={styles.reminderItem} onClick={() => setSelectedDoc(d)}>
                 <span>🔔</span>
-                <span className={styles.reminderText}>{d.reminder}</span>
+                <div>
+                  <div className={styles.reminderTitle}>{d.title}</div>
+                  <div className={styles.reminderText}>{d.reminder}</div>
+                </div>
               </div>
             ))}
           </nav>

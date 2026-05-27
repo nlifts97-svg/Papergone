@@ -211,3 +211,5 @@
   .scanRow { grid-template-columns: 1fr; }
   .chatBox { width: calc(100vw - 48px); }
 }
+
+.reminderTitle { font-size: 12px; font-weight: 500; color: var(--text); }

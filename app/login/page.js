@@ -27,14 +27,11 @@ function LoginForm() {
     setMessage('')
 
     if (isSignup) {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { data: signUpData, error } = await supabase.auth.signUp({ email, password })
       if (error) setError(error.message)
-      else {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          await supabase.from('profiles').upsert({ id: user.id, email: user.email })
-        }
-        setMessage('Check your email to confirm your account!')
+      else if (signUpData?.user) {
+        await supabase.from('profiles').upsert({ id: signUpData.user.id, email: signUpData.user.email })
+        router.push('/dashboard')
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
