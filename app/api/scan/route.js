@@ -13,7 +13,7 @@ export async function POST(request) {
         'X-Title': 'PaperGone',
       },
       body: JSON.stringify({
-        model: 'google/gemini-flash-1.5',
+        model: 'google/gemma-4-31b-it:free',
         messages: [{
           role: 'user',
           content: [
