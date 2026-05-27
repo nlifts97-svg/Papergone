@@ -201,10 +201,25 @@
   padding: 0 40px;
 }
 
+.pricingSub {
+  text-align: center;
+  color: var(--text2);
+  font-size: 15px;
+  margin-top: -32px;
+  margin-bottom: 40px;
+}
+
 .pricingGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+}
+
+.pricingDesc {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 20px;
+  margin-top: -12px;
 }
 
 .pricingCard {

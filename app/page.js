@@ -89,30 +89,50 @@ export default function Home() {
 
       <section className={styles.pricing}>
         <h2 className={styles.sectionTitle}>Simple pricing</h2>
+        <p className={styles.pricingSub}>Start free. Upgrade when you need more.</p>
         <div className={styles.pricingGrid}>
           <div className={styles.pricingCard}>
-            <div className={styles.pricingName}>Free</div>
+            <div className={styles.pricingName}>Starter</div>
             <div className={styles.pricingPrice}>€0<span>/mo</span></div>
+            <div className={styles.pricingDesc}>Perfect to try PaperGone</div>
             <ul className={styles.pricingList}>
-              <li>✓ 20 documents/month</li>
+              <li>✓ 20 documents total</li>
               <li>✓ AI scanning & extraction</li>
               <li>✓ Smart folders</li>
               <li>✓ Search</li>
+              <li style={{color:'#9e9e9e'}}>✗ Reminders</li>
+              <li style={{color:'#9e9e9e'}}>✗ Sharing</li>
             </ul>
-            <Link href="/login?signup=true" className={styles.pricingBtn}>Get started</Link>
+            <Link href="/login?signup=true" className={styles.pricingBtn}>Get started free</Link>
           </div>
           <div className={styles.pricingCard} style={{border:'2px solid #1a1a1a'}}>
             <div className={styles.pricingBadge}>Most popular</div>
-            <div className={styles.pricingName}>Premium</div>
+            <div className={styles.pricingName}>Pro</div>
             <div className={styles.pricingPrice}>€9<span>/mo</span></div>
+            <div className={styles.pricingDesc}>For individuals & freelancers</div>
             <ul className={styles.pricingList}>
               <li>✓ Unlimited documents</li>
-              <li>✓ Everything in Free</li>
-              <li>✓ Sharing & collaboration</li>
-              <li>✓ Reminders</li>
+              <li>✓ Everything in Starter</li>
+              <li>✓ Deadline reminders</li>
+              <li>✓ Share documents</li>
               <li>✓ Advanced AI search</li>
+              <li>✓ Priority support</li>
             </ul>
             <Link href="/login?signup=true" className={styles.pricingBtn} style={{background:'#1a1a1a',color:'white'}}>Start free trial</Link>
+          </div>
+          <div className={styles.pricingCard}>
+            <div className={styles.pricingName}>Business</div>
+            <div className={styles.pricingPrice}>€49<span>/mo</span></div>
+            <div className={styles.pricingDesc}>For teams & companies</div>
+            <ul className={styles.pricingList}>
+              <li>✓ Everything in Pro</li>
+              <li>✓ Team sharing & spaces</li>
+              <li>✓ Multiple users</li>
+              <li>✓ Admin dashboard</li>
+              <li>✓ Permission controls</li>
+              <li>✓ Dedicated support</li>
+            </ul>
+            <Link href="/login?signup=true" className={styles.pricingBtn}>Contact us</Link>
           </div>
         </div>
       </section>
