@@ -114,14 +114,14 @@ export default function Dashboard() {
     try {
       const base64 = await toBase64(file)
       const mediaType = file.type || 'image/jpeg'
-      setUploadProgress('AI is analyzing...')
+      setUploadProgress('Preparing document...')
 
-      let aiData = { type: 'other', title: file.name, summary: '', fields: [], folder: 'Other', reminder: null, tags: [] }
+      let aiData = { type: 'other', title: '', summary: '', fields: [], folder: 'Other', reminder: null, tags: [], defaultFields: {}, defaultFolders: {} }
       try {
         const scanRes = await fetch('/api/scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64: base64, mediaType })
+          body: JSON.stringify({ mediaType })
         })
         if (scanRes.ok) aiData = await scanRes.json()
       } catch (e) { console.log('AI scan failed') }
@@ -425,7 +425,7 @@ export default function Dashboard() {
               <div className={styles.scanRow}>
                 <div className={styles.scanField}>
                   <label className={styles.scanLabel}>Document type</label>
-                  <select className={styles.scanInput} value={editType} onChange={e => setEditType(e.target.value)}>
+                  <select className={styles.scanInput} value={editType} onChange={e => { setEditType(e.target.value); setEditFolder(scanPopup?.defaultFolders?.[e.target.value] || e.target.value); setEditFields(scanPopup?.defaultFields?.[e.target.value] || [{ key: '', value: '' }]) }}>
                     {ALL_TYPES.map(t => <option key={t} value={t}>{TYPE_EMOJI[t]} {t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
                   </select>
                 </div>
