@@ -226,6 +226,9 @@ export default function Dashboard() {
   }
 
   async function sendChat() {
+    setChatMessages(prev => [...prev, { role: "assistant", text: "AI assistant is coming soon! 🚀 We are working on it." }])
+    setChatInput("")
+    return
     if (!chatInput.trim() || chatLoading) return
     const msg = chatInput.trim()
     setChatInput('')
@@ -320,8 +323,8 @@ export default function Dashboard() {
         )}
 
         <div className={styles.sidebarBottom}>
-          <button className={styles.chatBtn} onClick={() => setShowChat(true)}>💬 Ask AI assistant</button>
-          <button className={styles.upgradeBtn} onClick={() => router.push('/pricing')}>⚡ Upgrade plan</button>
+          <button className={styles.chatBtn} onClick={() => { setShowChat(true); setChatMessages([{ role: "assistant", text: "🚀 AI Assistant coming soon! Once launched, you can ask things like: How much do I owe this month? When does my warranty expire? Show me all unpaid bills." }]) }}>💬 Ask AI assistant</button>
+          <button className={styles.upgradeBtn} onClick={() => alert('💳 Payments coming soon! We are setting up secure payments. Stay tuned.')}>⚡ Upgrade plan</button>
           <button className={styles.signOutBtn} onClick={signOut}>Sign out</button>
         </div>
       </aside>
