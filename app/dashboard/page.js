@@ -209,20 +209,20 @@ export default function Dashboard() {
   }
 
   async function createGroupAndShare() {
-    if (!shareGroupName || !shareEmail) return
-    const { data: group } = await supabase.from('groups').insert({ name: shareGroupName, owner_id: user.id }).select().single()
-    if (group) {
-      await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentId: shareDocId, groupId: group.id, inviteEmail: shareEmail, userId: user.id })
-      })
-      setGroups(prev => [...prev, group])
-    }
+    if (!shareGroupName || !shareEmail) { alert('Please fill in both fields.'); return }
+    const res = await fetch('/api/share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ documentId: shareDocId, groupName: shareGroupName, inviteEmail: shareEmail, userId: user.id })
+    })
+    const data = await res.json()
+    if (data.error) { alert(data.error); return }
+    alert('Document shared with ' + shareEmail + '!')
     setShowShare(false)
     setShareEmail('')
     setShareGroupName('')
     setShareDocId(null)
+    loadGroups(user.id)
   }
 
   async function sendChat() {
