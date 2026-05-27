@@ -80,44 +80,64 @@ export default function Dashboard() {
     setUploading(true)
     setUploadProgress('Reading document...')
 
-    const base64 = await toBase64(file)
-    const mediaType = file.type || 'image/jpeg'
+    try {
+      const base64 = await toBase64(file)
+      const mediaType = file.type || 'image/jpeg'
 
-    setUploadProgress('AI is analyzing...')
+      setUploadProgress('AI is analyzing...')
 
-    const scanRes = await fetch('/api/scan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: base64, mediaType })
-    })
-    const aiData = await scanRes.json()
+      let aiData = { type: 'other', title: file.name, summary: '', fields: [], folder: 'Other', reminder: null, tags: [] }
+      try {
+        const scanRes = await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64: base64, mediaType })
+        })
+        if (scanRes.ok) aiData = await scanRes.json()
+      } catch (e) {
+        console.log('AI scan failed, saving without AI data')
+      }
 
-    setUploadProgress('Saving to your archive...')
+      setUploadProgress('Saving to your archive...')
 
-    const fileName = `${user.id}/${Date.now()}_${file.name}`
-    const { data: storageData } = await supabase.storage
-      .from('documents')
-      .upload(fileName, file)
+      // Try to upload to storage, but continue even if it fails
+      let imageUrl = null
+      try {
+        const fileName = `${user.id}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+        const { data: storageData, error: storageError } = await supabase.storage
+          .from('documents')
+          .upload(fileName, file, { upsert: true })
+        if (storageData && !storageError) {
+          const { data: urlData } = supabase.storage.from('documents').getPublicUrl(fileName)
+          imageUrl = urlData.publicUrl
+        }
+      } catch (e) {
+        console.log('Storage upload failed, continuing without image')
+      }
 
-    let imageUrl = null
-    if (storageData) {
-      const { data: urlData } = supabase.storage.from('documents').getPublicUrl(fileName)
-      imageUrl = urlData.publicUrl
+      const { data: doc, error: insertError } = await supabase.from('documents').insert({
+        user_id: user.id,
+        type: aiData.type || 'other',
+        title: aiData.title || file.name,
+        summary: aiData.summary || '',
+        fields: aiData.fields || [],
+        folder: aiData.folder || 'Other',
+        reminder: aiData.reminder || null,
+        tags: aiData.tags || [],
+        image_url: imageUrl,
+      }).select().single()
+
+      if (insertError) {
+        console.error('Insert error:', insertError)
+        alert('Error saving document: ' + insertError.message)
+      } else if (doc) {
+        setDocs(prev => [doc, ...prev])
+      }
+    } catch (e) {
+      console.error('Process file error:', e)
+      alert('Something went wrong: ' + e.message)
     }
 
-    const { data: doc } = await supabase.from('documents').insert({
-      user_id: user.id,
-      type: aiData.type || 'other',
-      title: aiData.title || file.name,
-      summary: aiData.summary || '',
-      fields: aiData.fields || [],
-      folder: aiData.folder || 'Other',
-      reminder: aiData.reminder || null,
-      tags: aiData.tags || [],
-      image_url: imageUrl,
-    }).select().single()
-
-    if (doc) setDocs(prev => [doc, ...prev])
     setUploading(false)
     setUploadProgress('')
   }

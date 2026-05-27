@@ -4,6 +4,8 @@
 create table if not exists profiles (
   id uuid references auth.users primary key,
   email text,
+  plan text default 'starter',
+  stripe_customer_id text,
   created_at timestamp default now()
 );
 
