@@ -13,7 +13,7 @@ export async function POST(request) {
         'X-Title': 'PaperGone',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-exp:free',
+        model: 'google/gemini-flash-1.5',
         messages: [{
           role: 'user',
           content: [
@@ -23,15 +23,32 @@ export async function POST(request) {
             },
             {
               type: 'text',
-              text: `Analyze this document image and respond ONLY with a valid JSON object, no markdown, no explanation. Use these exact keys:
+              text: `You are a document classification expert. Analyze this document image carefully.
+
+Respond ONLY with a valid JSON object, no markdown, no explanation, no code blocks.
+
+Rules:
+- If you see a cash register receipt, store receipt, or purchase receipt → type MUST be "receipt"
+- If you see a utility bill (electricity, water, gas, internet) → type MUST be "bill"  
+- If you see an invoice with invoice number → type MUST be "invoice"
+- If you see a contract or agreement → type MUST be "contract"
+- If you see a warranty card or certificate → type MUST be "warranty"
+- If you see an ID card, passport, or license → type MUST be "id"
+- If you see a medical document → type MUST be "medical"
+- If you see a tax document → type MUST be "tax"
+- If you see an insurance document → type MUST be "insurance"
+- If you see a handwritten note → type MUST be "note"
+- Only use "other" if it truly doesn't fit any category above
+
+JSON format:
 {
-  "type": one of: "receipt", "bill", "invoice", "contract", "warranty", "id", "medical", "tax", "insurance", "note", "other",
-  "title": short descriptive title max 6 words,
-  "summary": one sentence describing what this document is,
-  "fields": array of up to 8 objects with "key" and "value" for the most important extracted info (amounts, dates, names, companies, addresses),
-  "folder": suggested folder path like "Bills/Energy/2026" or "Receipts/Amazon",
-  "reminder": null or string describing a deadline or action needed like "Payment due June 15" or "Warranty expires 2027",
-  "tags": array of 2-4 relevant tags
+  "type": "receipt|bill|invoice|contract|warranty|id|medical|tax|insurance|note|other",
+  "title": "short descriptive title max 6 words",
+  "summary": "one sentence describing what this document is",
+  "fields": [{"key": "field name", "value": "extracted value"}],
+  "folder": "suggested folder like Bills/Energy or Receipts/Supermarket",
+  "reminder": null or "deadline description",
+  "tags": ["tag1", "tag2"]
 }`
             }
           ]
